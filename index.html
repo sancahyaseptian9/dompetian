@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dompetian.com - Monthly History</title>
+    <title>dompetian.com - PIN Secure Edition</title>
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -50,12 +50,63 @@
             padding: 16px;
             display: flex;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
+        }
+
+        /* Layar Lockscreen PIN M-Banking */
+        #lockScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .lock-card {
+            background: var(--card-bg);
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            border: 2px solid var(--primary);
+            backdrop-filter: blur(10px);
+        }
+
+        .lock-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .lock-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .pin-input {
+            letter-spacing: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
 
         .container {
             width: 100%;
             max-width: 480px;
+            display: none;
         }
 
         header {
@@ -87,22 +138,24 @@
 
         .header-btns {
             display: flex;
-            gap: 6px;
+            gap: 5px;
+            flex-wrap: wrap;
+            max-width: 150px;
+            justify-content: flex-end;
         }
 
         .btn-action {
             background: var(--card-bg);
             border: 2px solid var(--primary);
             color: var(--primary);
-            padding: 6px 10px;
+            padding: 5px 8px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
             box-shadow: var(--shadow);
         }
 
-        /* Widget Hari & Tanggal */
         .date-widget {
             background: var(--card-bg);
             padding: 8px 15px;
@@ -117,7 +170,6 @@
             backdrop-filter: blur(5px);
         }
 
-        /* Kartu Saldo */
         .balance-card {
             background: var(--card-bg);
             padding: 20px;
@@ -162,7 +214,6 @@
             font-size: 0.95rem;
         }
 
-        /* Kartu Akumulasi Bulanan dengan Pilihan Bulan */
         .monthly-card {
             background: var(--card-bg);
             padding: 15px 18px;
@@ -210,7 +261,6 @@
         .income-text { color: var(--success); }
         .expense-text { color: var(--danger); }
 
-        /* Form Input */
         .form-card {
             background-color: var(--card-bg);
             padding: 18px;
@@ -274,7 +324,6 @@
             box-shadow: 0 4px 10px rgba(217, 4, 41, 0.3);
         }
 
-        /* Riwayat Transaksi */
         .history-section h3 {
             font-size: 1rem;
             margin-bottom: 10px;
@@ -350,16 +399,36 @@
 </head>
 <body data-theme="light">
 
-    <div class="container">
+    <!-- Layar PIN Lockscreen -->
+    <div id="lockScreen">
+        <div class="lock-card">
+            <h2>🕷️ dompetian.com</h2>
+            <p id="lockMessage">Masukkan PIN M-Banking kamu</p>
+            <form onsubmit="verifyPin(event)">
+                <div class="form-group">
+                    <input type="password" id="pinInput" class="pin-input" maxlength="6" placeholder="••••" required autofocus>
+                </div>
+                <button type="submit" class="btn-submit">Buka Dompet</button>
+            </form>
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="resetPinEmergency()" style="background: none; border: none; color: var(--danger); font-size: 0.75rem; cursor: pointer; font-weight: 600;">Lupa PIN?</button>
+                <span style="font-size: 0.7rem; color: var(--text-muted);">Default: <b>1234</b></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Konten Utama Aplikasi -->
+    <div class="container" id="mainApp">
         <!-- Header -->
         <header>
             <div class="logo-area">
                 <h1>🕷️ dompetian.com</h1>
-                <span>Multi-Month Summary</span>
+                <span>PIN Secured</span>
             </div>
             <div class="header-btns">
                 <button class="btn-action" onclick="document.getElementById('bgUpload').click()">🖼️ Foto</button>
                 <input type="file" id="bgUpload" accept="image/*" style="display: none;" onchange="changeBackground(event)">
+                <button class="btn-action" onclick="changePinPrompt()">🔐 PIN</button>
                 <button class="btn-action" id="themeToggle" onclick="toggleTheme()">🌙</button>
             </div>
         </header>
@@ -385,12 +454,12 @@
             </div>
         </div>
 
-        <!-- Kartu Rekap / Akumulasi Bulanan dengan Pilihan Bulan -->
+        <!-- Kartu Rekap Bulanan -->
         <div class="monthly-card">
             <div class="monthly-header">
                 <h3>📅 Rekap Bulanan</h3>
                 <select id="monthSelect" onchange="updateUI()">
-                    <!-- Pilihan bulan terisi otomatis dari data -->
+                    <!-- Pilihan bulan -->
                 </select>
             </div>
             <div class="monthly-stats">
@@ -452,6 +521,51 @@
     <script>
         let transactions = JSON.parse(localStorage.getItem('dompetian_custom_trans')) || [];
 
+        function verifyPin(e) {
+            e.preventDefault();
+            const enteredPin = document.getElementById('pinInput').value;
+            const currentPin = localStorage.getItem('dompetian_user_pin') || '1234';
+
+            if (enteredPin === currentPin) {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                document.body.style.alignItems = 'flex-start';
+                initApp();
+            } else {
+                document.getElementById('lockMessage').innerText = "PIN Salah! Coba lagi.";
+                document.getElementById('lockMessage').style.color = "var(--danger)";
+                document.getElementById('pinInput').value = '';
+            }
+        }
+
+        // Fitur Reset Sandi Darurat (Lupa PIN)
+        function resetPinEmergency() {
+            if (confirm("Reset PIN kembali ke default (1234)?")) {
+                localStorage.setItem('dompetian_user_pin', '1234');
+                alert("PIN berhasil direset ke 1234. Silakan masukkan PIN 1234.");
+                document.getElementById('lockMessage').innerText = "Masukkan PIN M-Banking kamu";
+                document.getElementById('lockMessage').style.color = "var(--text-muted)";
+            }
+        }
+
+        // Fitur Ganti PIN di dalam aplikasi
+        function changePinPrompt() {
+            const oldPinCheck = prompt("Masukkan PIN lama kamu:");
+            const currentPin = localStorage.getItem('dompetian_user_pin') || '1234';
+
+            if (oldPinCheck === currentPin) {
+                const newPin = prompt("Masukkan PIN baru (minimal 4 digit):");
+                if (newPin && newPin.length >= 4) {
+                    localStorage.setItem('dompetian_user_pin', newPin);
+                    alert("PIN berhasil diperbarui! Gunakan PIN baru ini saat masuk berikutnya.");
+                } else {
+                    alert("PIN baru tidak valid (minimal 4 digit). Ganti PIN dibatalkan.");
+                }
+            } else if (oldPinCheck !== null) {
+                alert("PIN lama salah! Ganti PIN gagal.");
+            }
+        }
+
         function formatRupiah(number) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
         }
@@ -462,17 +576,15 @@
             document.getElementById('dateWidget').innerText = now.toLocaleDateString('id-ID', options);
         }
 
-        // Mengisi pilihan bulan di dropdown secara otomatis berdasarkan data transaksi yang ada
         function populateMonthDropdown() {
             const monthSelect = document.getElementById('monthSelect');
             const currentSelected = monthSelect.value;
             
-            // Kumpulkan semua bulan unik dari transaksi
             let monthsSet = new Set();
             const now = new Date();
             const currentMonthName = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
             
-            monthsSet.add(currentMonthName); // Pastikan bulan saat ini selalu ada
+            monthsSet.add(currentMonthName);
             
             transactions.forEach(t => {
                 if (t.rawMonthYear) {
@@ -480,7 +592,6 @@
                 }
             });
 
-            // Urutkan atau ubah ke array
             let monthsArray = Array.from(monthsSet);
 
             monthSelect.innerHTML = '';
@@ -491,7 +602,6 @@
                 monthSelect.appendChild(opt);
             });
 
-            // Kembalikan pilihan sebelumnya jika masih ada, jika tidak pilih bulan sekarang
             if (monthsArray.includes(currentSelected)) {
                 monthSelect.value = currentSelected;
             } else {
@@ -530,7 +640,6 @@
                     totalExpense += amountNum;
                 }
 
-                // Hitung khusus untuk bulan yang sedang dipilih di dropdown rekap
                 if (t.rawMonthYear === selectedMonth) {
                     if (t.type === 'income') {
                         monthlyIncome += amountNum;
@@ -603,6 +712,7 @@
                 reader.onload = function(e) {
                     const imageUrl = e.target.result;
                     document.body.style.backgroundImage = `url('${imageUrl}')`;
+                    document.getElementById('lockScreen').style.backgroundImage = `url('${imageUrl}')`;
                     localStorage.setItem('dompetian_bg_image', imageUrl);
                 }
                 reader.readAsDataURL(file);
@@ -624,7 +734,7 @@
             }
         }
 
-        window.onload = function() {
+        function initApp() {
             const savedTheme = localStorage.getItem('dompetian_custom_theme') || 'light';
             document.body.setAttribute('data-theme', savedTheme);
             document.getElementById('themeToggle').innerText = savedTheme === 'dark' ? '☀️' : '🌙';
@@ -632,6 +742,7 @@
             const savedBg = localStorage.getItem('dompetian_bg_image');
             if (savedBg) {
                 document.body.style.backgroundImage = `url('${savedBg}')`;
+                document.getElementById('lockScreen').style.backgroundImage = `url('${savedBg}')`;
             }
 
             const now = new Date();
