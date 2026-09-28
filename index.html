@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dompetian.com - PIN Secure Edition</title>
+    <title>dompetian.com - Savings & Goals Edition</title>
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -54,7 +54,7 @@
             min-height: 100vh;
         }
 
-        /* Layar Lockscreen PIN M-Banking */
+        /* Layar PIN Lockscreen */
         #lockScreen {
             position: fixed;
             top: 0;
@@ -123,14 +123,14 @@
         }
 
         .logo-area h1 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: var(--primary);
             letter-spacing: -0.5px;
         }
 
         .logo-area span {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             display: block;
             font-weight: 600;
@@ -138,9 +138,9 @@
 
         .header-btns {
             display: flex;
-            gap: 5px;
+            gap: 4px;
             flex-wrap: wrap;
-            max-width: 150px;
+            max-width: 160px;
             justify-content: flex-end;
         }
 
@@ -148,12 +148,52 @@
             background: var(--card-bg);
             border: 2px solid var(--primary);
             color: var(--primary);
-            padding: 5px 8px;
+            padding: 4px 7px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
             box-shadow: var(--shadow);
+        }
+
+        /* Navigasi Antar Halaman (Tab Menu) */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        [data-theme="dark"] .tab-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
         }
 
         .date-widget {
@@ -385,6 +425,60 @@
             padding: 2px 6px;
         }
 
+        /* CSS Target Tabungan & Kalkulator */
+        .goal-item {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(5px);
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .goal-header h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        [data-theme="dark"] .goal-header h4 {
+            color: var(--primary);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background: var(--border-color);
+            border-radius: 10px;
+            height: 12px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            border-radius: 10px;
+        }
+
+        .goal-calc-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: var(--input-bg);
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: 1px solid var(--border-color);
+        }
+
         .empty-state {
             text-align: center;
             color: var(--text-muted);
@@ -411,7 +505,7 @@
                 <button type="submit" class="btn-submit">Buka Dompet</button>
             </form>
             <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
-                <button onclick="resetPinEmergency()" style="background: none; border: none; color: var(--danger); font-size: 0.75rem; cursor: pointer; font-weight: 600;">Lupa PIN?</button>
+                <button type="button" onclick="resetPinEmergency()" style="background: none; border: none; color: var(--danger); font-size: 0.75rem; cursor: pointer; font-weight: 600;">Lupa PIN?</button>
                 <span style="font-size: 0.7rem; color: var(--text-muted);">Default: <b>1234</b></span>
             </div>
         </div>
@@ -419,11 +513,10 @@
 
     <!-- Konten Utama Aplikasi -->
     <div class="container" id="mainApp">
-        <!-- Header -->
         <header>
             <div class="logo-area">
                 <h1>🕷️ dompetian.com</h1>
-                <span>PIN Secured</span>
+                <span>Savings & Goals Edition</span>
             </div>
             <div class="header-btns">
                 <button class="btn-action" onclick="document.getElementById('bgUpload').click()">🖼️ Foto</button>
@@ -433,93 +526,158 @@
             </div>
         </header>
 
-        <!-- Widget Tanggal -->
-        <div class="date-widget" id="dateWidget">
-            Memuat tanggal...
+        <!-- Menu Navigasi Antar Halaman -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="tabDompet" onclick="switchTab('dompet')">📁 Dompet Utama</button>
+            <button class="tab-btn" id="tabTarget" onclick="switchTab('target')">🎯 Target Tabungan</button>
         </div>
 
-        <!-- Kartu Saldo Keseluruhan -->
-        <div class="balance-card">
-            <h3>Sisa Saldo Jaring (Total)</h3>
-            <h2 id="totalBalance">Rp 0</h2>
-            <div class="summary-row">
-                <div class="summary-item">
-                    <p>Total Pemasukan</p>
-                    <span id="totalIncome" class="income-text">Rp 0</span>
-                </div>
-                <div class="summary-item">
-                    <p>Total Pengeluaran</p>
-                    <span id="totalExpense" class="expense-text">Rp 0</span>
-                </div>
+        <!-- HALAMAN 1: DOMPET UTAMA -->
+        <div id="pageDompet" class="page-section active">
+            <div class="date-widget" id="dateWidget">
+                Memuat tanggal...
             </div>
-        </div>
 
-        <!-- Kartu Rekap Bulanan -->
-        <div class="monthly-card">
-            <div class="monthly-header">
-                <h3>📅 Rekap Bulanan</h3>
-                <select id="monthSelect" onchange="updateUI()">
-                    <!-- Pilihan bulan -->
-                </select>
-            </div>
-            <div class="monthly-stats">
-                <div class="m-stat-item">
-                    <p style="font-size: 0.75rem; color: var(--text-muted);">Masuk Bulan Ini</p>
-                    <span id="monthlyIncome" class="income-text">Rp 0</span>
-                </div>
-                <div class="m-stat-item" style="text-align: right;">
-                    <p style="font-size: 0.75rem; color: var(--text-muted);">Keluar Bulan Ini</p>
-                    <span id="monthlyExpense" class="expense-text">Rp 0</span>
+            <div class="balance-card">
+                <h3>Sisa Saldo Jaring (Total)</h3>
+                <h2 id="totalBalance">Rp 0</h2>
+                <div class="summary-row">
+                    <div class="summary-item">
+                        <p>Total Pemasukan</p>
+                        <span id="totalIncome" class="income-text">Rp 0</span>
+                    </div>
+                    <div class="summary-item">
+                        <p>Total Pengeluaran</p>
+                        <span id="totalExpense" class="expense-text">Rp 0</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Form Tambah Catatan -->
-        <div class="form-card">
-            <h3>Tambah Catatan Spidey</h3>
-            <form id="transactionForm" onsubmit="addTransaction(event)">
-                <div class="form-group">
-                    <label for="description">Keterangan</label>
-                    <input type="text" id="description" placeholder="Contoh: Joki tugas, Beli kostum..." required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Jumlah (Rp)</label>
-                    <input type="number" id="amount" placeholder="Contoh: 75000" required>
-                </div>
-                <div class="form-group">
-                    <label for="type">Tipe Transaksi</label>
-                    <select id="type">
-                        <option value="income">Pemasukan</option>
-                        <option value="expense">Pengeluaran</option>
+            <div class="monthly-card">
+                <div class="monthly-header">
+                    <h3>📅 Rekap Bulanan</h3>
+                    <select id="monthSelect" onchange="updateUI()">
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="category">Kategori</label>
-                    <select id="category">
-                        <option value="Umum">Umum</option>
-                        <option value="Makanan">Makanan & Minuman</option>
-                        <option value="Transportasi">Transportasi</option>
-                        <option value="Belanja">Belanja</option>
-                        <option value="Hiburan">Hiburan</option>
-                        <option value="Gaji">Gaji / Pendapatan</option>
-                        <option value="Pahlawan">Pahlawan / Darurat</option>
-                    </select>
+                <div class="monthly-stats">
+                    <div class="m-stat-item">
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">Masuk Bulan Ini</p>
+                        <span id="monthlyIncome" class="income-text">Rp 0</span>
+                    </div>
+                    <div class="m-stat-item" style="text-align: right;">
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">Keluar Bulan Ini</p>
+                        <span id="monthlyExpense" class="expense-text">Rp 0</span>
+                    </div>
                 </div>
-                <button type="submit" class="btn-submit">Simpan Catatan</button>
-            </form>
+            </div>
+
+            <div class="form-card">
+                <h3>Tambah Catatan Spidey</h3>
+                <form id="transactionForm" onsubmit="addTransaction(event)">
+                    <div class="form-group">
+                        <label for="description">Keterangan</label>
+                        <input type="text" id="description" placeholder="Contoh: Joki tugas, Beli kostum..." required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Jumlah (Rp)</label>
+                        <input type="number" id="amount" placeholder="Contoh: 75000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Tipe Transaksi</label>
+                        <select id="type">
+                            <option value="income">Pemasukan</option>
+                            <option value="expense">Pengeluaran</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Kategori</label>
+                        <select id="category">
+                            <option value="Umum">Umum</option>
+                            <option value="Makanan">Makanan & Minuman</option>
+                            <option value="Transportasi">Transportasi</option>
+                            <option value="Belanja">Belanja</option>
+                            <option value="Hiburan">Hiburan</option>
+                            <option value="Gaji">Gaji / Pendapatan</option>
+                            <option value="Pahlawan">Pahlawan / Darurat</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">Simpan Catatan</button>
+                </form>
+            </div>
+
+            <div class="history-section">
+                <h3>Riwayat Jaring Keuangan</h3>
+                <ul id="transactionList" class="transaction-list">
+                </ul>
+            </div>
         </div>
 
-        <!-- Riwayat Transaksi -->
-        <div class="history-section">
-            <h3>Riwayat Jaring Keuangan</h3>
-            <ul id="transactionList" class="transaction-list">
-                <!-- Data masuk otomatis -->
-            </ul>
+        <!-- HALAMAN 2: TARGET TABUNGAN & KALKULATOR -->
+        <div id="pageTarget" class="page-section">
+            <div class="form-card">
+                <h3>🎯 Buat Target Impian Baru</h3>
+                <form id="goalForm" onsubmit="addGoal(event)">
+                    <div class="form-group">
+                        <label for="goalName">Nama Impian / Barang</label>
+                        <input type="text" id="goalName" placeholder="Contoh: Beli Headset Baru" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="goalTargetAmount">Total Harga (Rp)</label>
+                        <input type="number" id="goalTargetAmount" placeholder="Contoh: 300000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalSavedAmount">Sudah Terkumpul Saat Ini (Rp)</label>
+                        <input type="number" id="goalSavedAmount" placeholder="Contoh: 50000" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalPeriod">Rencana Menabung Secara</label>
+                        <select id="goalPeriod">
+                            <option value="daily">Rutin Per Hari</option>
+                            <option value="weekly">Rutin Per Minggu</option>
+                            <option value="monthly">Rutin Per Bulan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="goalRoutineAmount">Besar Tabungan per Periode (Rp)</label>
+                        <input type="number" id="goalRoutineAmount" placeholder="Contoh: 10000 (nabung 10rb tiap hari/minggu/bulan)" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Simpan Target & Kalkulasi</button>
+                </form>
+            </div>
+
+            <div class="history-section">
+                <h3>Daftar Target & Kalkulator Waktu</h3>
+                <div id="goalList">
+                    <!-- Target masuk otomatis -->
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         let transactions = JSON.parse(localStorage.getItem('dompetian_custom_trans')) || [];
+        let savingsGoals = JSON.parse(localStorage.getItem('dompetian_custom_goals')) || [];
+
+        // Navigasi Antar Tab Menu
+        function switchTab(tabName) {
+            const tabDompet = document.getElementById('tabDompet');
+            const tabTarget = document.getElementById('tabTarget');
+            const pageDompet = document.getElementById('pageDompet');
+            const pageTarget = document.getElementById('pageTarget');
+
+            if (tabName === 'dompet') {
+                tabDompet.classList.add('active');
+                tabTarget.classList.remove('active');
+                pageDompet.classList.add('active');
+                pageTarget.classList.remove('active');
+            } else {
+                tabTarget.classList.add('active');
+                tabDompet.classList.remove('active');
+                pageTarget.classList.add('active');
+                pageDompet.classList.remove('active');
+                updateGoalUI();
+            }
+        }
 
         function verifyPin(e) {
             e.preventDefault();
@@ -538,17 +696,15 @@
             }
         }
 
-        // Fitur Reset Sandi Darurat (Lupa PIN)
         function resetPinEmergency() {
             if (confirm("Reset PIN kembali ke default (1234)?")) {
                 localStorage.setItem('dompetian_user_pin', '1234');
-                alert("PIN berhasil direset ke 1234. Silakan masukkan PIN 1234.");
+                alert("PIN berhasil direset ke 1234.");
                 document.getElementById('lockMessage').innerText = "Masukkan PIN M-Banking kamu";
                 document.getElementById('lockMessage').style.color = "var(--text-muted)";
             }
         }
 
-        // Fitur Ganti PIN di dalam aplikasi
         function changePinPrompt() {
             const oldPinCheck = prompt("Masukkan PIN lama kamu:");
             const currentPin = localStorage.getItem('dompetian_user_pin') || '1234';
@@ -557,12 +713,12 @@
                 const newPin = prompt("Masukkan PIN baru (minimal 4 digit):");
                 if (newPin && newPin.length >= 4) {
                     localStorage.setItem('dompetian_user_pin', newPin);
-                    alert("PIN berhasil diperbarui! Gunakan PIN baru ini saat masuk berikutnya.");
+                    alert("PIN berhasil diperbarui!");
                 } else {
-                    alert("PIN baru tidak valid (minimal 4 digit). Ganti PIN dibatalkan.");
+                    alert("PIN baru tidak valid (minimal 4 digit).");
                 }
             } else if (oldPinCheck !== null) {
-                alert("PIN lama salah! Ganti PIN gagal.");
+                alert("PIN lama salah!");
             }
         }
 
@@ -705,6 +861,83 @@
             updateUI();
         }
 
+        // Fungsi Tambah Target Tabungan & Kalkulator Waktu
+        function addGoal(e) {
+            e.preventDefault();
+            const name = document.getElementById('goalName').value;
+            const targetAmount = Number(document.getElementById('goalTargetAmount').value);
+            const savedAmount = Number(document.getElementById('goalSavedAmount').value);
+            const period = document.getElementById('goalPeriod').value;
+            const routineAmount = Number(document.getElementById('goalRoutineAmount').value);
+
+            savingsGoals.unshift({
+                name,
+                targetAmount,
+                savedAmount,
+                period,
+                routineAmount
+            });
+
+            updateGoalUI();
+            document.getElementById('goalForm').reset();
+            alert("Target tabungan berhasil dibuat!");
+        }
+
+        function updateGoalUI() {
+            const goalListEl = document.getElementById('goalList');
+            goalListEl.innerHTML = '';
+
+            if (savingsGoals.length === 0) {
+                goalListEl.innerHTML = `<div class="empty-state">Belum ada target tabungan impian 🎯</div>`;
+                return;
+            }
+
+            savingsGoals.forEach((g, index) => {
+                const kekurangan = g.targetAmount - g.savedAmount;
+                let percentage = (g.savedAmount / g.targetAmount) * 100;
+                if (percentage > 100) percentage = 100;
+
+                // Kalkulasi Waktu Estimasi
+                let timeNeededText = "";
+                if (g.routineAmount > 0 && kekurangan > 0) {
+                    let count = Math.ceil(kekurangan / g.routineAmount);
+                    let periodLabel = g.period === 'daily' ? 'Hari' : (g.period === 'weekly' ? 'Minggu' : 'Bulan');
+                    timeNeededText = `Estimasi tercapai dalam sekitar <b>${count} ${periodLabel}</b> lagi.`;
+                } else if (kekurangan <= 0) {
+                    timeNeededText = `🎉 Target sudah tercapai sepenuhnya!`;
+                } else {
+                    timeNeededText = `Masukkan besar tabungan rutin yang valid untuk kalkulasi.`;
+                }
+
+                const div = document.createElement('div');
+                div.classList.add('goal-item');
+                div.innerHTML = `
+                    <div class="goal-header">
+                        <h4>🎯 ${g.name}</h4>
+                        <button class="btn-delete" onclick="deleteGoal(${index})">&times;</button>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">
+                        Terkumpul: <b>${formatRupiah(g.savedAmount)}</b> dari ${formatRupiah(g.targetAmount)}
+                    </p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="goal-calc-info">
+                        💡 Nabung ${formatRupiah(g.routineAmount)}/${g.period === 'daily' ? 'hari' : (g.period === 'weekly' ? 'minggu' : 'bulan')}.<br>
+                        ${timeNeededText}
+                    </div>
+                `;
+                goalListEl.appendChild(div);
+            });
+
+            localStorage.setItem('dompetian_custom_goals', JSON.stringify(savingsGoals));
+        }
+
+        function deleteGoal(index) {
+            savingsGoals.splice(index, 1);
+            updateGoalUI();
+        }
+
         function changeBackground(event) {
             const file = event.target.files[0];
             if (file) {
@@ -753,6 +986,7 @@
 
             updateDateWidget();
             updateUI();
+            updateGoalUI();
         }
     </script>
 </body>
