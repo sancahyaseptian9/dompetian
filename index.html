@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dompetian.com - Savings & Goals Edition</title>
+    <title>dompetian.com - Interactive Goals Edition</title>
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -54,7 +54,6 @@
             min-height: 100vh;
         }
 
-        /* Layar PIN Lockscreen */
         #lockScreen {
             position: fixed;
             top: 0;
@@ -156,7 +155,6 @@
             box-shadow: var(--shadow);
         }
 
-        /* Navigasi Antar Halaman (Tab Menu) */
         .nav-tabs {
             display: flex;
             gap: 8px;
@@ -425,7 +423,7 @@
             padding: 2px 6px;
         }
 
-        /* CSS Target Tabungan & Kalkulator */
+        /* Target Tabungan & Kalkulator Interaktif */
         .goal-item {
             background: var(--card-bg);
             padding: 16px;
@@ -479,6 +477,24 @@
             border: 1px solid var(--border-color);
         }
 
+        .goal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-add-fund {
+            flex: 1;
+            padding: 8px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         .empty-state {
             text-align: center;
             color: var(--text-muted);
@@ -516,7 +532,7 @@
         <header>
             <div class="logo-area">
                 <h1>🕷️ dompetian.com</h1>
-                <span>Savings & Goals Edition</span>
+                <span>Interactive Goals</span>
             </div>
             <div class="header-btns">
                 <button class="btn-action" onclick="document.getElementById('bgUpload').click()">🖼️ Foto</button>
@@ -612,7 +628,7 @@
             </div>
         </div>
 
-        <!-- HALAMAN 2: TARGET TABUNGAN & KALKULATOR -->
+        <!-- HALAMAN 2: TARGET TABUNGAN & KALKULATOR INTERAKTIF -->
         <div id="pageTarget" class="page-section">
             <div class="form-card">
                 <h3>🎯 Buat Target Impian Baru</h3>
@@ -626,7 +642,7 @@
                         <input type="number" id="goalTargetAmount" placeholder="Contoh: 300000" required>
                     </div>
                     <div class="form-group">
-                        <label for="goalSavedAmount">Sudah Terkumpul Saat Ini (Rp)</label>
+                        <label for="goalSavedAmount">Sudah Terkumpul Awal (Rp)</label>
                         <input type="number" id="goalSavedAmount" placeholder="Contoh: 50000" value="0" required>
                     </div>
                     <div class="form-group">
@@ -639,7 +655,7 @@
                     </div>
                     <div class="form-group">
                         <label for="goalRoutineAmount">Besar Tabungan per Periode (Rp)</label>
-                        <input type="number" id="goalRoutineAmount" placeholder="Contoh: 10000 (nabung 10rb tiap hari/minggu/bulan)" required>
+                        <input type="number" id="goalRoutineAmount" placeholder="Contoh: 10000 (nabung rutin)" required>
                     </div>
                     <button type="submit" class="btn-submit">Simpan Target & Kalkulasi</button>
                 </form>
@@ -658,7 +674,6 @@
         let transactions = JSON.parse(localStorage.getItem('dompetian_custom_trans')) || [];
         let savingsGoals = JSON.parse(localStorage.getItem('dompetian_custom_goals')) || [];
 
-        // Navigasi Antar Tab Menu
         function switchTab(tabName) {
             const tabDompet = document.getElementById('tabDompet');
             const tabTarget = document.getElementById('tabTarget');
@@ -861,7 +876,6 @@
             updateUI();
         }
 
-        // Fungsi Tambah Target Tabungan & Kalkulator Waktu
         function addGoal(e) {
             e.preventDefault();
             const name = document.getElementById('goalName').value;
@@ -883,6 +897,20 @@
             alert("Target tabungan berhasil dibuat!");
         }
 
+        // Fungsi Tambah Uang Interaktif ke Target Tertentu
+        function addFundToGoal(index) {
+            const input = prompt("Masukkan jumlah uang yang ingin ditambahkan ke target ini (Rp):");
+            const addAmount = Number(input);
+
+            if (addAmount > 0 && !isNaN(addAmount)) {
+                savingsGoals[index].savedAmount += addAmount;
+                updateGoalUI();
+                alert(`Berhasil menambahkan ${formatRupiah(addAmount)} ke target tabungan!`);
+            } else if (input !== null) {
+                alert("Nominal uang tidak valid.");
+            }
+        }
+
         function updateGoalUI() {
             const goalListEl = document.getElementById('goalList');
             goalListEl.innerHTML = '';
@@ -897,7 +925,6 @@
                 let percentage = (g.savedAmount / g.targetAmount) * 100;
                 if (percentage > 100) percentage = 100;
 
-                // Kalkulasi Waktu Estimasi
                 let timeNeededText = "";
                 if (g.routineAmount > 0 && kekurangan > 0) {
                     let count = Math.ceil(kekurangan / g.routineAmount);
@@ -906,7 +933,7 @@
                 } else if (kekurangan <= 0) {
                     timeNeededText = `🎉 Target sudah tercapai sepenuhnya!`;
                 } else {
-                    timeNeededText = `Masukkan besar tabungan rutin yang valid untuk kalkulasi.`;
+                    timeNeededText = `Atur tabungan rutin untuk melihat estimasi waktu.`;
                 }
 
                 const div = document.createElement('div');
@@ -923,8 +950,11 @@
                         <div class="progress-bar" style="width: ${percentage}%"></div>
                     </div>
                     <div class="goal-calc-info">
-                        💡 Nabung ${formatRupiah(g.routineAmount)}/${g.period === 'daily' ? 'hari' : (g.period === 'weekly' ? 'minggu' : 'bulan')}.<br>
+                        💡 Nabung rutin ${formatRupiah(g.routineAmount)}/${g.period === 'daily' ? 'hari' : (g.period === 'weekly' ? 'minggu' : 'bulan')}.<br>
                         ${timeNeededText}
+                    </div>
+                    <div class="goal-actions">
+                        <button class="btn-add-fund" onclick="addFundToGoal(${index})">+ Tambah Uang Tabungan</button>
                     </div>
                 `;
                 goalListEl.appendChild(div);
