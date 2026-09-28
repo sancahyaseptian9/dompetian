@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dompetian.com - Clean & Minimalist Edition</title>
+    <title>dompetian.com - Ultra Minimalist</title>
     <style>
         :root {
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-color: #0f172a;
             --text-muted: #64748b;
-            --primary: #0284c7; /* Biru bersih profesional */
+            --primary: #0284c7;
             --primary-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             --success: #10b981;
             --danger: #ef4444;
             --border-color: #e2e8f0;
             --input-bg: #f1f5f9;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
         [data-theme="dark"] {
@@ -30,7 +30,7 @@
             --danger: #f87171;
             --border-color: #1f2937;
             --input-bg: #1f2937;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         * {
@@ -46,14 +46,13 @@
             background-position: center;
             background-attachment: fixed;
             color: var(--text-color);
-            padding: 16px;
+            padding: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* Lockscreen Simpel */
         #lockScreen {
             position: fixed;
             top: 0;
@@ -72,73 +71,91 @@
 
         .lock-card {
             background: var(--card-bg);
-            padding: 30px 24px;
-            border-radius: 20px;
+            padding: 25px 20px;
+            border-radius: 16px;
             box-shadow: var(--shadow);
             width: 100%;
-            max-width: 340px;
+            max-width: 320px;
             text-align: center;
             border: 1px solid var(--border-color);
         }
 
         .lock-card h2 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: var(--primary);
             margin-bottom: 4px;
-            font-weight: 800;
+            font-weight: 700;
         }
 
         .lock-card p {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .pin-input {
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             text-align: center;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 8px;
+            padding: 8px;
         }
 
         .container {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             display: none;
         }
 
-        /* Header Bersih (Tanpa Bubble) */
+        /* Header Simpel & Rapi */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
-            padding: 12px 16px;
+            margin-bottom: 12px;
+            padding: 10px 14px;
             background: var(--card-bg);
-            border-radius: 14px;
+            border-radius: 12px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
         }
 
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .logo-area h1 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 800;
             color: var(--primary);
             letter-spacing: -0.3px;
         }
 
-        .logo-area span {
+        .user-display {
             font-size: 0.65rem;
             color: var(--text-muted);
-            display: block;
-            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
         }
+
+        .btn-edit-user {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 2px;
+            opacity: 0.7;
+        }
+        .btn-edit-user:hover { opacity: 1; }
 
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
         }
 
@@ -146,32 +163,31 @@
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 6px 10px;
-            border-radius: 8px;
+            padding: 5px 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
-        /* Navigasi Tab Minimalis */
+        /* Navigasi Tab */
         .nav-tabs {
             display: flex;
             gap: 6px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             cursor: pointer;
             text-align: center;
-            box-shadow: var(--shadow);
         }
 
         .tab-btn.active {
@@ -184,35 +200,35 @@
         .page-section.active { display: block; }
 
         .date-widget {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-weight: 500;
-            padding-left: 4px;
+            padding-left: 2px;
         }
 
-        /* Kartu Saldo Elegan */
+        /* Kartu Saldo */
         .balance-card {
             background: var(--primary-gradient);
             color: #ffffff;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
-            margin-bottom: 14px;
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.2);
+            margin-bottom: 12px;
         }
 
         .balance-card h3 {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             opacity: 0.85;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             font-weight: 600;
         }
 
         .balance-card h2 {
-            font-size: 1.8rem;
-            margin-bottom: 14px;
+            font-size: 1.6rem;
+            margin-bottom: 12px;
             font-weight: 800;
         }
 
@@ -220,30 +236,30 @@
             display: flex;
             justify-content: space-between;
             border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 12px;
+            padding-top: 10px;
         }
 
         .summary-item p {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             opacity: 0.8;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         .summary-item span {
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .income-text-card { color: #6ee7b7; }
         .expense-text-card { color: #fca5a5; }
 
-        /* Kartu Rekap Bulanan */
+        /* Kartu Rekap */
         .monthly-card {
             background: var(--card-bg);
-            padding: 14px 16px;
-            border-radius: 14px;
+            padding: 12px 14px;
+            border-radius: 12px;
             box-shadow: var(--shadow);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             border: 1px solid var(--border-color);
         }
 
@@ -251,69 +267,69 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .monthly-header h3 {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
         .monthly-header select {
             width: auto;
-            padding: 4px 8px;
-            font-size: 0.75rem;
+            padding: 3px 6px;
+            font-size: 0.7rem;
             border-radius: 6px;
         }
 
         .monthly-stats {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             background: var(--input-bg);
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
         }
 
         .income-text { color: var(--success); font-weight: 700; }
         .expense-text { color: var(--danger); font-weight: 700; }
 
-        /* Kartu Form Simpel */
+        /* Form Card */
         .form-card {
             background-color: var(--card-bg);
-            padding: 16px;
-            border-radius: 14px;
+            padding: 14px;
+            border-radius: 12px;
             box-shadow: var(--shadow);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             border: 1px solid var(--border-color);
         }
 
         .form-card h3 {
-            font-size: 0.9rem;
-            margin-bottom: 12px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
             font-weight: 700;
         }
 
         .form-group {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         label {
             display: block;
-            font-size: 0.75rem;
-            margin-bottom: 4px;
+            font-size: 0.7rem;
+            margin-bottom: 3px;
             color: var(--text-muted);
             font-weight: 600;
         }
 
         input, select {
             width: 100%;
-            padding: 10px;
+            padding: 9px;
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 8px;
             background-color: var(--input-bg);
             color: var(--text-color);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             outline: none;
         }
 
@@ -323,63 +339,62 @@
 
         .btn-submit {
             width: 100%;
-            padding: 11px;
+            padding: 10px;
             background: var(--primary-gradient);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-top: 4px;
-            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
         }
 
         /* Riwayat */
         .history-section h3 {
-            font-size: 0.9rem;
-            margin-bottom: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
             font-weight: 700;
         }
 
         .transaction-list {
             list-style: none;
-            max-height: 280px;
+            max-height: 240px;
             overflow-y: auto;
         }
 
         .transaction-item {
             background-color: var(--card-bg);
-            padding: 10px 12px;
-            border-radius: 12px;
+            padding: 9px 12px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow);
         }
 
         .t-info h4 {
-            font-size: 0.8rem;
-            margin-bottom: 2px;
+            font-size: 0.78rem;
+            margin-bottom: 1px;
             font-weight: 700;
         }
 
         .t-info small {
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
         }
 
         .t-right {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .t-amount {
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
         }
 
         .btn-delete {
@@ -387,16 +402,16 @@
             border: none;
             color: var(--danger);
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
-        /* Target Tabungan Minimalis */
+        /* Target Tabungan */
         .goal-item {
             background: var(--card-bg);
-            padding: 14px;
-            border-radius: 14px;
+            padding: 12px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             box-shadow: var(--shadow);
         }
 
@@ -404,59 +419,59 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .goal-header h4 {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
         .progress-bar-container {
             width: 100%;
             background: var(--border-color);
-            border-radius: 8px;
-            height: 8px;
+            border-radius: 6px;
+            height: 6px;
             overflow: hidden;
-            margin: 8px 0;
+            margin: 6px 0;
         }
 
         .progress-bar {
             height: 100%;
             background: var(--success);
             width: 0%;
-            border-radius: 8px;
+            border-radius: 6px;
         }
 
         .goal-calc-info {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: var(--text-muted);
             background: var(--input-bg);
             padding: 6px 8px;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-top: 6px;
         }
 
         .btn-add-fund {
             width: 100%;
-            padding: 7px;
+            padding: 6px;
             background: var(--success);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
         .empty-state {
             text-align: center;
             color: var(--text-muted);
-            font-size: 0.78rem;
-            padding: 20px;
+            font-size: 0.75rem;
+            padding: 16px;
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
         }
     </style>
@@ -474,9 +489,9 @@
                 </div>
                 <button type="submit" class="btn-submit">Buka Aplikasi</button>
             </form>
-            <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
-                <button type="button" onclick="resetPinEmergency()" style="background: none; border: none; color: var(--danger); font-size: 0.7rem; cursor: pointer; font-weight: 600;">Lupa PIN?</button>
-                <span style="font-size: 0.68rem; color: var(--text-muted);">Default: <b>1234</b></span>
+            <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <button type="button" onclick="resetPinEmergency()" style="background: none; border: none; color: var(--danger); font-size: 0.68rem; cursor: pointer; font-weight: 600;">Lupa PIN?</button>
+                <span style="font-size: 0.65rem; color: var(--text-muted);">Default: <b>1234</b></span>
             </div>
         </div>
     </div>
@@ -485,8 +500,13 @@
     <div class="container" id="mainApp">
         <header>
             <div class="logo-area">
-                <h1>dompetian.com</h1>
-                <span>Personal Finance</span>
+                <div>
+                    <h1>dompetian.com</h1>
+                    <div class="user-display">
+                        <span id="userNameDisplay">Sobat Spidey</span>
+                        <button class="btn-edit-user" onclick="editUsername()" title="Edit Nama">✏️</button>
+                    </div>
+                </div>
             </div>
             <div class="header-actions">
                 <button class="icon-btn" onclick="toggleTheme()" id="themeToggle">🌙</button>
@@ -495,23 +515,23 @@
             </div>
         </header>
 
-        <!-- Menu Pengaturan Background (Muncul saat tombol BG diklik) -->
-        <div id="bgSettingsMenu" class="form-card" style="display: none; margin-bottom: 14px;">
-            <h3 style="font-size: 0.8rem; margin-bottom: 8px;">Pengaturan Wallpaper</h3>
+        <!-- Pengaturan BG -->
+        <div id="bgSettingsMenu" class="form-card" style="display: none; margin-bottom: 10px;">
+            <h3 style="font-size: 0.75rem; margin-bottom: 6px;">Pengaturan Wallpaper</h3>
             <div style="display: flex; gap: 6px;">
                 <button class="icon-btn" style="flex: 1;" onclick="document.getElementById('bgUpload').click()">📁 Pilih Foto</button>
-                <button class="icon-btn" style="flex: 1; color: var(--danger);" onclick="removeBackground()">🚫 Hapus BG (Polos)</button>
+                <button class="icon-btn" style="flex: 1; color: var(--danger);" onclick="removeBackground()">🚫 Hapus BG</button>
             </div>
             <input type="file" id="bgUpload" accept="image/*" style="display: none;" onchange="changeBackground(event)">
         </div>
 
-        <!-- Tab Navigasi -->
+        <!-- Tab -->
         <div class="nav-tabs">
-            <button class="tab-btn active" id="tabDompet" onclick="switchTab('dompet')">Dompet Utama</button>
-            <button class="tab-btn" id="tabTarget" onclick="switchTab('target')">Target Impian</button>
+            <button class="tab-btn active" id="tabDompet" onclick="switchTab('dompet')">Dompet</button>
+            <button class="tab-btn" id="tabTarget" onclick="switchTab('target')">Target</button>
         </div>
 
-        <!-- Halaman 1: Dompet -->
+        <!-- Halaman Dompet -->
         <div id="pageDompet" class="page-section active">
             <div class="date-widget" id="dateWidget">Memuat tanggal...</div>
 
@@ -538,11 +558,11 @@
                 </div>
                 <div class="monthly-stats">
                     <div>
-                        <p style="font-size: 0.68rem; color: var(--text-muted);">Masuk</p>
+                        <p style="font-size: 0.65rem; color: var(--text-muted);">Masuk</p>
                         <span id="monthlyIncome" class="income-text">Rp 0</span>
                     </div>
                     <div style="text-align: right;">
-                        <p style="font-size: 0.68rem; color: var(--text-muted);">Keluar</p>
+                        <p style="font-size: 0.65rem; color: var(--text-muted);">Keluar</p>
                         <span id="monthlyExpense" class="expense-text">Rp 0</span>
                     </div>
                 </div>
@@ -578,7 +598,7 @@
                             <option value="Lainnya">Lainnya</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn-submit">Simpan Transaksi</button>
+                    <button type="submit" class="btn-submit">Simpan</button>
                 </form>
             </div>
 
@@ -589,7 +609,7 @@
             </div>
         </div>
 
-        <!-- Halaman 2: Target -->
+        <!-- Halaman Target -->
         <div id="pageTarget" class="page-section">
             <div class="form-card">
                 <h3>Buat Target Tabungan</h3>
@@ -676,6 +696,15 @@
             }
         }
 
+        function editUsername() {
+            const currentName = localStorage.getItem('dompetian_username') || 'Sobat Spidey';
+            const newName = prompt("Masukkan nama pengguna baru:", currentName);
+            if (newName && newName.trim() !== "") {
+                localStorage.setItem('dompetian_username', newName.trim());
+                document.getElementById('userNameDisplay').innerText = newName.trim();
+            }
+        }
+
         function switchTab(tabName) {
             document.getElementById('tabDompet').classList.toggle('active', tabName === 'dompet');
             document.getElementById('tabTarget').classList.toggle('active', tabName === 'target');
@@ -722,7 +751,7 @@
             let totalIncome = 0, totalExpense = 0, monthlyIncome = 0, monthlyExpense = 0;
 
             if (transactions.length === 0) {
-                listElement.innerHTML = `<li class="empty-state">Belum ada transaksi tercatat.</li>`;
+                listElement.innerHTML = `<li class="empty-state">Belum ada transaksi.</li>`;
             }
 
             transactions.forEach((t, index) => {
@@ -829,7 +858,7 @@
                         <h4>${g.name}</h4>
                         <button class="btn-delete" onclick="deleteGoal(${index})">&times;</button>
                     </div>
-                    <p style="font-size: 0.72rem; color: var(--text-muted);">Terkumpul: <b>${formatRupiah(g.savedAmount)}</b> dari ${formatRupiah(g.targetAmount)}</p>
+                    <p style="font-size: 0.68rem; color: var(--text-muted);">Terkumpul: <b>${formatRupiah(g.savedAmount)}</b> dari ${formatRupiah(g.targetAmount)}</p>
                     <div class="progress-bar-container"><div class="progress-bar" style="width: ${percentage}%"></div></div>
                     <div class="goal-calc-info">💡 Nabung ${formatRupiah(g.routineAmount)}/${g.period === 'daily' ? 'hari' : (g.period === 'weekly' ? 'minggu' : 'bulan')}.<br>${timeText}</div>
                     <button class="btn-add-fund" onclick="addFundToGoal(${index})">+ Tambah Tabungan</button>
@@ -889,6 +918,9 @@
                 document.body.style.backgroundImage = `url('${savedBg}')`;
                 document.getElementById('lockScreen').style.backgroundImage = `url('${savedBg}')`;
             }
+
+            const savedUser = localStorage.getItem('dompetian_username') || 'Sobat Spidey';
+            document.getElementById('userNameDisplay').innerText = savedUser;
 
             const now = new Date();
             const currentMonthName = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
