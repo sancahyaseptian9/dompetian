@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dompetian.com - Monthly Summary</title>
+    <title>dompetian.com - Monthly History</title>
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -162,7 +162,7 @@
             font-size: 0.95rem;
         }
 
-        /* Kartu Akumulasi Bulanan */
+        /* Kartu Akumulasi Bulanan dengan Pilihan Bulan */
         .monthly-card {
             background: var(--card-bg);
             padding: 15px 18px;
@@ -173,18 +173,28 @@
             backdrop-filter: blur(5px);
         }
 
-        .monthly-card h3 {
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-            color: var(--secondary);
+        .monthly-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 10px;
         }
 
-        [data-theme="dark"] .monthly-card h3 {
+        .monthly-header h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        [data-theme="dark"] .monthly-header h3 {
             color: var(--primary);
+        }
+
+        .monthly-header select {
+            width: auto;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border-radius: 8px;
         }
 
         .monthly-stats {
@@ -195,11 +205,6 @@
             padding: 10px 12px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
-        }
-
-        .m-stat-item span {
-            display: block;
-            font-weight: 700;
         }
 
         .income-text { color: var(--success); }
@@ -350,7 +355,7 @@
         <header>
             <div class="logo-area">
                 <h1>🕷️ dompetian.com</h1>
-                <span>Monthly Summary Edition</span>
+                <span>Multi-Month Summary</span>
             </div>
             <div class="header-btns">
                 <button class="btn-action" onclick="document.getElementById('bgUpload').click()">🖼️ Foto</button>
@@ -364,9 +369,9 @@
             Memuat tanggal...
         </div>
 
-        <!-- Kartu Saldo -->
+        <!-- Kartu Saldo Keseluruhan -->
         <div class="balance-card">
-            <h3>Sisa Saldo Jaring</h3>
+            <h3>Sisa Saldo Jaring (Total)</h3>
             <h2 id="totalBalance">Rp 0</h2>
             <div class="summary-row">
                 <div class="summary-item">
@@ -380,9 +385,14 @@
             </div>
         </div>
 
-        <!-- Kartu Akumulasi / Rekap Bulanan -->
+        <!-- Kartu Rekap / Akumulasi Bulanan dengan Pilihan Bulan -->
         <div class="monthly-card">
-            <h3>📅 Rekap Bulan Ini <span id="currentMonthLabel" style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);"></span></h3>
+            <div class="monthly-header">
+                <h3>📅 Rekap Bulanan</h3>
+                <select id="monthSelect" onchange="updateUI()">
+                    <!-- Pilihan bulan terisi otomatis dari data -->
+                </select>
+            </div>
             <div class="monthly-stats">
                 <div class="m-stat-item">
                     <p style="font-size: 0.75rem; color: var(--text-muted);">Masuk Bulan Ini</p>
@@ -440,21 +450,58 @@
     </div>
 
     <script>
-        // Menggunakan kunci penyimpanan lama agar data tidak hilang
         let transactions = JSON.parse(localStorage.getItem('dompetian_custom_trans')) || [];
 
         function formatRupiah(number) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
         }
 
-        // Tampilkan Hari, Tanggal, Tahun
         function updateDateWidget() {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('dateWidget').innerText = now.toLocaleDateString('id-ID', options);
         }
 
+        // Mengisi pilihan bulan di dropdown secara otomatis berdasarkan data transaksi yang ada
+        function populateMonthDropdown() {
+            const monthSelect = document.getElementById('monthSelect');
+            const currentSelected = monthSelect.value;
+            
+            // Kumpulkan semua bulan unik dari transaksi
+            let monthsSet = new Set();
+            const now = new Date();
+            const currentMonthName = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+            
+            monthsSet.add(currentMonthName); // Pastikan bulan saat ini selalu ada
+            
+            transactions.forEach(t => {
+                if (t.rawMonthYear) {
+                    monthsSet.add(t.rawMonthYear);
+                }
+            });
+
+            // Urutkan atau ubah ke array
+            let monthsArray = Array.from(monthsSet);
+
+            monthSelect.innerHTML = '';
+            monthsArray.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.innerText = m;
+                monthSelect.appendChild(opt);
+            });
+
+            // Kembalikan pilihan sebelumnya jika masih ada, jika tidak pilih bulan sekarang
+            if (monthsArray.includes(currentSelected)) {
+                monthSelect.value = currentSelected;
+            } else {
+                monthSelect.value = currentMonthName;
+            }
+        }
+
         function updateUI() {
+            populateMonthDropdown();
+
             const listElement = document.getElementById('transactionList');
             const balanceElement = document.getElementById('totalBalance');
             const incomeElement = document.getElementById('totalIncome');
@@ -462,18 +509,13 @@
             
             const monthlyIncomeEl = document.getElementById('monthlyIncome');
             const monthlyExpenseEl = document.getElementById('monthlyExpense');
-            const currentMonthLabel = document.getElementById('currentMonthLabel');
+            const selectedMonth = document.getElementById('monthSelect').value;
 
             listElement.innerHTML = '';
             let totalIncome = 0;
             let totalExpense = 0;
             let monthlyIncome = 0;
             let monthlyExpense = 0;
-
-            // Mendapatkan bulan dan tahun saat ini untuk akumulasi (format misal: "September 2026")
-            const now = new Date();
-            const currentMonthName = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-            currentMonthLabel.innerText = `(${currentMonthName})`;
 
             if (transactions.length === 0) {
                 listElement.innerHTML = `<li class="empty-state">Belum ada jaring catatan di dompetian.com 🕸️</li>`;
@@ -488,9 +530,8 @@
                     totalExpense += amountNum;
                 }
 
-                // Cek apakah transaksi masuk dalam bulan dan tahun berjalan
-                // t.rawDate disimpan dalam format ISO date string atau kita bandingkan string bulannya
-                if (t.rawMonthYear === currentMonthName) {
+                // Hitung khusus untuk bulan yang sedang dipilih di dropdown rekap
+                if (t.rawMonthYear === selectedMonth) {
                     if (t.type === 'income') {
                         monthlyIncome += amountNum;
                     } else {
@@ -543,7 +584,7 @@
                 type, 
                 category, 
                 date: dateStr,
-                rawMonthYear: monthYearStr // Penanda untuk akumulasi bulanan
+                rawMonthYear: monthYearStr 
             });
             
             updateUI();
@@ -555,7 +596,6 @@
             updateUI();
         }
 
-        // Ganti Latar Belakang dari Galeri HP
         function changeBackground(event) {
             const file = event.target.files[0];
             if (file) {
@@ -594,7 +634,6 @@
                 document.body.style.backgroundImage = `url('${savedBg}')`;
             }
 
-            // Migrasi data lama jika belum ada rawMonthYear agar tidak error
             const now = new Date();
             const currentMonthName = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
             transactions.forEach(t => {
